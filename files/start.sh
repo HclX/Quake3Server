@@ -17,7 +17,10 @@ if [ $(echo ${SERVER_BIN} | wc -l) -gt 1 ]; then
     exit 1
 fi
 
-${SERVER_BIN} \
+screen -dmS ioq3svr ${SERVER_BIN} \
     +seta rconPassword "${ADMIN_PASSWORD}" \
     +exec common.cfg \
     ${SERVER_ARGS}
+
+${HOME}/gotty -w -c "admin:${ADMIN_PASSWORD}" screen -x ioq3svr
+
