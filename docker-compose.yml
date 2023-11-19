@@ -1,0 +1,13 @@
+version: '3'
+services:
+  ioq3svr:
+    image: ioq3svr:latest
+    environment:
+      - PUID=1026
+      - PGID=100
+      - ADMIN_PASSWORD=12345678
+    ports:
+      - "27960:27960/udp"
+    volumes:
+      - /home/xuan/Linux/Q3A/baseq3:/q3a/baseq3:ro
+      - /home/xuan/Linux/Q3A/server:/usr/local/games/quake3/.q3a/baseq3:rw
