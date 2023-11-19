@@ -1,6 +1,19 @@
 #!/bin/sh
-PUID=${PUID:-$(id -u $Q3SVR_USER)}
-PGID=${PGID:-$(id -g $Q3SVR_USER)}
+OLD_UID=$(id -u $Q3SVR_USER)
+OLD_GID=$(id -g $Q3SVR_USER)
 
-usermod --uid $PUID --gid $PGID $Q3SVR_USER
-su -s/bin/sh -c $Q3SVR_HOME/ioq3svr.sh $Q3SVR_USER
+NEW_UID=${PUID:-$OLD_UID}
+NEW_GID=${PGID:-$OLD_GID}
+
+if [ "$NEW_UID" -ne "$OLD_UID" ]; then
+    usermod --uid $NEW_UID $Q3SVR_USER
+    find / -user $OLD_UID -exec chown $NEW_UID {} \;
+fi
+
+
+if [ "$NEW_GID" -ne "$OLD_GID" ]; then
+    usermod --gid $NEW_GID $Q3SVR_USER
+    find / -group $OLD_GID -exec chgrp $NEW_GID {} \;
+fi
+
+/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
